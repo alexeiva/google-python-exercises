@@ -31,12 +31,25 @@ def read_urls(filename):
 
   with open(filename, 'r') as f:
     matches = re.findall(pattern, f.read())
-    #print len(matches)
     for m in matches:
       if m not in url_list:
         url_list.append(hostname + m)
-  url_list = sorted(url_list)
+  url_list = sorted(set(url_list))  
   return url_list
+  
+def smartsort(url_list):
+  places_back = []
+  for i in url_list:
+    r = re.sub(r'(\w\w\w\w)-(\w\w\w\w).jpg', r'\2-\1.jpg', i)
+    places_back.append(r)
+
+  places_back = sorted(places_back)
+  places_front = []
+  for i in places_back:
+    r = re.sub(r'(\w\w\w\w)-(\w\w\w\w).jpg', r'\2-\1.jpg', i)
+    places_front.append(r)
+  
+  return places_front
 
 def download_images(img_urls, dest_dir):
   """Given the urls already in the correct order, downloads
@@ -60,7 +73,7 @@ def download_images(img_urls, dest_dir):
     mydir = dest_dir + "/img%i.jpg" % i
     print "Retrieving img %i of %i..." % (i, len(img_urls) - 1)
     urllib.urlretrieve(v, mydir)
-    html += "<img src='animaldir/img%i.jpg'/>" % i
+    html += "<img src='%s'/>" % (mydir)
  
   html += '''
 </body>
@@ -82,8 +95,8 @@ def main():
     todir = args[1]
     del args[0:2]
 
-  img_urls = read_urls(args[0])
-  
+  img_urls = smartsort(read_urls(args[0]))
+
   if todir:
     download_images(img_urls, todir)
   else:
