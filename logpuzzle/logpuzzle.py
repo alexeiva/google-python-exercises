@@ -27,13 +27,14 @@ def read_urls(filename):
   url_list = []
   matches = []
   pattern = r'\S+puzzle\S+'
+  hostname = r'http://code.google.com'
 
   with open(filename, 'r') as f:
     matches = re.findall(pattern, f.read())
     #print len(matches)
     for m in matches:
       if m not in url_list:
-        url_list.append(m)
+        url_list.append(hostname + m)
   url_list = sorted(url_list)
   return url_list
 
