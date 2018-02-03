@@ -38,7 +38,6 @@ def read_urls(filename):
   url_list = sorted(url_list)
   return url_list
 
-
 def download_images(img_urls, dest_dir):
   """Given the urls already in the correct order, downloads
   each image into the given directory.
@@ -48,7 +47,28 @@ def download_images(img_urls, dest_dir):
   Creates the directory if necessary.
   """
   # +++your code here+++
-  
+  if not os.path.isdir(dest_dir):
+    os.mkdir(dest_dir)
+
+  html = '''
+  <verbatim>
+  <html>
+  <body>
+'''
+
+  for i,v in enumerate(img_urls):
+    mydir = dest_dir + "/img%i.jpg" % i
+    print "Retrieving img %i of %i..." % (i, len(img_urls) - 1)
+    urllib.urlretrieve(v, mydir)
+    html += "<img src='animaldir/img%i.jpg'/>" % i
+ 
+  html += '''
+</body>
+</html>
+'''
+
+  with open('index.html', 'a') as f:
+    f.write(html)      
 
 def main():
   args = sys.argv[1:]
@@ -63,9 +83,7 @@ def main():
     del args[0:2]
 
   img_urls = read_urls(args[0])
-  for i in img_urls:
-    print i
-
+  
   if todir:
     download_images(img_urls, todir)
   else:
