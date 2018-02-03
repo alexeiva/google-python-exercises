@@ -18,14 +18,24 @@ Here's what a puzzle url looks like:
 10.254.254.28 - - [06/Aug/2007:00:13:48 -0700] "GET /~foo/puzzle-bar-aaab.jpg HTTP/1.0" 302 528 "-" "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6"
 """
 
-
 def read_urls(filename):
   """Returns a list of the puzzle urls from the given log file,
   extracting the hostname from the filename itself.
   Screens out duplicate urls and returns the urls sorted into
   increasing order."""
   # +++your code here+++
-  
+  url_list = []
+  matches = []
+  pattern = r'\S+puzzle\S+'
+
+  with open(filename, 'r') as f:
+    matches = re.findall(pattern, f.read())
+    #print len(matches)
+    for m in matches:
+      if m not in url_list:
+        url_list.append(m)
+  return url_list
+
 
 def download_images(img_urls, dest_dir):
   """Given the urls already in the correct order, downloads
@@ -51,6 +61,8 @@ def main():
     del args[0:2]
 
   img_urls = read_urls(args[0])
+  for i in img_urls:
+    print i
 
   if todir:
     download_images(img_urls, todir)
