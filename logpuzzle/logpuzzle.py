@@ -34,6 +34,7 @@ def read_urls(filename):
     for m in matches:
       if m not in url_list:
         url_list.append(m)
+  url_list = sorted(url_list)
   return url_list
 
 
